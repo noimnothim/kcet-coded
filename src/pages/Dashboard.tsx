@@ -154,28 +154,11 @@ const Dashboard = () => {
         if (!response.ok) throw new Error('Failed to load news')
         const items: NewsItem[] = await response.json()
 
-        // Enrich Reddit items without image using oEmbed thumbnail
-        const enriched = await Promise.all(
-          items.map(async (item) => {
-            const needsAutoImage = !item.image || item.image === 'auto'
-            const isReddit = item.url?.includes('reddit.com')
-            if (needsAutoImage && isReddit) {
-              try {
-                const oembedUrl = `https://www.reddit.com/oembed?url=${encodeURIComponent(item.url)}`
-                const res = await fetch(oembedUrl)
-                if (res.ok) {
-                  const data = await res.json()
-                  if (data?.thumbnail_url) {
-                    return { ...item, image: data.thumbnail_url }
-                  }
-                }
-              } catch (e) {
-                // ignore and fall back
-              }
-            }
-            return { ...item, image: item.image || '/placeholder.svg' }
-          })
-        )
+        // Use placeholder images for items without images
+        const enriched = items.map((item) => ({
+          ...item,
+          image: item.image || '/placeholder.svg'
+        }))
 
         setNews(enriched)
       } catch (err) {
