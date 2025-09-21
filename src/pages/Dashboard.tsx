@@ -488,6 +488,37 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
+      {/* KCET Coded Subreddit */}
+      <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-lg">r/</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-800 dark:text-blue-200">KCET Coded Community</h3>
+                <p className="text-sm text-blue-700 dark:text-blue-300">Join r/KCETCoded for questions about this website and KCET guidance</p>
+              </div>
+            </div>
+            <Button 
+              asChild 
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              <a 
+                href="https://www.reddit.com/r/KCETCoded/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Join Community
+              </a>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {quickActions.map((action) => (
