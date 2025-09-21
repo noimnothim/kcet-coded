@@ -1172,6 +1172,21 @@ const CollegeFinder = () => {
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                 <p className="text-muted-foreground">Loading college data from consolidated data source…</p>
               </div>
+              
+              {/* Data Size Disclaimer */}
+              <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    <p className="text-blue-800 dark:text-blue-200 font-medium mb-1">Please wait while we load the data</p>
+                    <p className="text-blue-700 dark:text-blue-300 text-xs">
+                      The dataset is approximately <strong>50 MB</strong> and contains comprehensive KCET cutoff data from multiple years. 
+                      This may take a few seconds to load and process.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
               <Progress value={progress} />
               <div className="flex items-center justify-between mt-1">
                 <div className="text-xs text-muted-foreground">{loadingTips[tipIndex]}</div>
