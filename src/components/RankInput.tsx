@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { validateRank, validateCategory } from "@/lib/security";
 
 interface RankInputProps {
   onRankSubmit: (rank: number, category: string) => void;
@@ -16,9 +17,22 @@ const RankInput: React.FC<RankInputProps> = ({ onRankSubmit }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const rankNum = parseInt(rank);
-    if (rankNum > 0 && category) {
-      onRankSubmit(rankNum, category);
+    
+    // Validate rank
+    const rankValidation = validateRank(rankNum);
+    if (!rankValidation.isValid) {
+      alert(rankValidation.error);
+      return;
     }
+
+    // Validate category
+    const categoryValidation = validateCategory(category);
+    if (!categoryValidation.isValid) {
+      alert(categoryValidation.error);
+      return;
+    }
+
+    onRankSubmit(rankNum, categoryValidation.sanitized);
   };
 
   return (

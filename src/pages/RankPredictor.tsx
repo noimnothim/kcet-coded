@@ -19,6 +19,7 @@ import {
   getCollegeSuggestions,
   type RankPrediction 
 } from "@/lib/rank-predictor"
+import { validateKCETMarks, validatePUCPercentage } from "@/lib/security"
 
 
 
@@ -56,10 +57,23 @@ const RankPredictor = () => {
       return
     }
 
-    if (kcetMarks < 0 || kcetMarks > 180 || pucPercentage < 0 || pucPercentage > 100) {
+    // Validate KCET marks
+    const kcetValidation = validateKCETMarks(kcetMarks);
+    if (!kcetValidation.isValid) {
       toast({
-        title: "Invalid Input",
-        description: "Please enter valid scores: KCET (0-180), PUC (0-100)",
+        title: "Invalid KCET Marks",
+        description: kcetValidation.error,
+        variant: "destructive"
+      })
+      return
+    }
+
+    // Validate PUC percentage
+    const pucValidation = validatePUCPercentage(pucPercentage);
+    if (!pucValidation.isValid) {
+      toast({
+        title: "Invalid PUC Percentage",
+        description: pucValidation.error,
         variant: "destructive"
       })
       return

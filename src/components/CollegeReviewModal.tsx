@@ -6,8 +6,16 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Star, MessageSquare, ThumbsUp, User, Calendar, CheckCircle, Trash2 } from "lucide-react"
+import { Star, MessageSquare, ThumbsUp, User, Calendar, CheckCircle, Trash2, AlertCircle } from "lucide-react"
 import { College, CollegeReview, saveReviewToSupabase, deleteReview, isUserReview } from "@/lib/college-service"
+import { 
+  validateReviewText, 
+  validateRating, 
+  checkRateLimit, 
+  getUserIdentifier, 
+  VALIDATION_LIMITS,
+  RATE_LIMITS
+} from "@/lib/security"
 
 interface CollegeReviewModalProps {
   college: College | null;
@@ -100,8 +108,51 @@ export const CollegeReviewModal = ({
   } : null;
 
   const handleSubmitReview = async () => {
+    // Check rate limiting first
+    const userIdentifier = getUserIdentifier();
+    const rateLimitCheck = checkRateLimit(userIdentifier, RATE_LIMITS.REVIEW_SUBMISSION);
+    
+    if (!rateLimitCheck.allowed) {
+      const resetTime = new Date(rateLimitCheck.resetTime).toLocaleTimeString();
+      alert(`Too many review submissions. Please wait until ${resetTime} before submitting another review.`);
+      return;
+    }
+
+    // Validate required fields
     if (newReview.rating === 0 || !newReview.review_text) {
       alert("Please fill in all required fields and provide a rating");
+      return;
+    }
+
+    // Validate review text
+    const textValidation = validateReviewText(newReview.review_text);
+    if (!textValidation.isValid) {
+      alert(textValidation.error);
+      return;
+    }
+
+    // Validate ratings
+    const ratingValidation = validateRating(newReview.rating);
+    if (!ratingValidation.isValid) {
+      alert(ratingValidation.error);
+      return;
+    }
+
+    const facultyValidation = validateRating(newReview.faculty_rating);
+    if (!facultyValidation.isValid) {
+      alert(`Faculty rating: ${facultyValidation.error}`);
+      return;
+    }
+
+    const infrastructureValidation = validateRating(newReview.infrastructure_rating);
+    if (!infrastructureValidation.isValid) {
+      alert(`Infrastructure rating: ${infrastructureValidation.error}`);
+      return;
+    }
+
+    const placementsValidation = validateRating(newReview.placements_rating);
+    if (!placementsValidation.isValid) {
+      alert(`Placements rating: ${placementsValidation.error}`);
       return;
     }
 
@@ -110,11 +161,11 @@ export const CollegeReviewModal = ({
       const savedReview = await saveReviewToSupabase({
         collegeCode: college.code,
         rating: newReview.rating,
-        review_text: newReview.review_text,
+        review_text: textValidation.sanitized, // Use sanitized text
         faculty_rating: newReview.faculty_rating,
         infrastructure_rating: newReview.infrastructure_rating,
         placements_rating: newReview.placements_rating,
-        comment: newReview.comment || newReview.review_text,
+        comment: newReview.comment || textValidation.sanitized,
         course: newReview.course,
         graduation_year: newReview.graduation_year,
       });
@@ -228,8 +279,12 @@ export const CollegeReviewModal = ({
                       onChange={(e) => setNewReview(prev => ({ ...prev, review_text: e.target.value }))}
                       placeholder="Share your detailed experience..."
                       rows={4}
+                      maxLength={VALIDATION_LIMITS.MAX_REVIEW_LENGTH}
                       className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
                     />
+                    <div className="text-xs text-gray-400 text-right">
+                      {newReview.review_text.length}/{VALIDATION_LIMITS.MAX_REVIEW_LENGTH} characters
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -239,6 +294,7 @@ export const CollegeReviewModal = ({
                         value={newReview.course}
                         onChange={(e) => setNewReview(prev => ({ ...prev, course: e.target.value }))}
                         placeholder="e.g., Computer Science"
+                        maxLength={50}
                         className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 text-sm"
                       />
                     </div>

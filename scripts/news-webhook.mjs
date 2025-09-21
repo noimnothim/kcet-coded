@@ -9,6 +9,11 @@ const execAsync = promisify(exec)
 const PORT = process.env.PORT || 3001
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'your-secret-key'
 
+// Validate required environment variables
+if (WEBHOOK_SECRET === 'your-secret-key') {
+  console.warn('⚠️  Warning: Using default webhook secret. Please set WEBHOOK_SECRET environment variable for production.');
+}
+
 async function updateNews() {
   try {
     console.log('🔄 Triggering news update via webhook...')
