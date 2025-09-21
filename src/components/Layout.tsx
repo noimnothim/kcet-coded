@@ -58,9 +58,15 @@ export function Layout({ children }: LayoutProps) {
                     <Settings className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-lg">
+                <DialogContent 
+                  className="sm:max-w-lg"
+                  aria-describedby="settings-dialog-description"
+                >
                   <DialogHeader>
                     <DialogTitle>Settings</DialogTitle>
+                    <p id="settings-dialog-description" className="sr-only">
+                      Configure application settings including dashboard mode, theme preferences, and data loading options.
+                    </p>
                   </DialogHeader>
                   <div className="space-y-5">
                     {/* Theme */}
