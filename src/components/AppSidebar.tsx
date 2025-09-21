@@ -1,4 +1,4 @@
-import { Calculator, Search, Target, Shuffle, Bell, Table, GitCompare, FileText, DollarSign, BarChart3, BookOpen, Star, Home, FileSpreadsheet, ClipboardList, ExternalLink, Construction } from "lucide-react"
+import { Calculator, Search, Target, Shuffle, Bell, Table, GitCompare, FileText, DollarSign, BarChart3, BookOpen, Star, Home, FileSpreadsheet, ClipboardList, ExternalLink, Construction, Info } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import {
   Sidebar,
@@ -21,6 +21,7 @@ const menuItems = [
   { title: "Round Tracker", url: "/round-tracker", icon: Bell },
   { title: "Documents", url: "/documents", icon: FileText },
   { title: "Reviews", url: "/reviews", icon: Star },
+  { title: "Info Centre", url: "/info-centre", icon: Info },
   { title: "Mock Simulator", url: "/mock-simulator", icon: Shuffle, underDevelopment: true },
   { title: "Seat Matrix", url: "/seat-matrix", icon: Table, underDevelopment: true },
   { title: "College Compare", url: "/college-compare", icon: GitCompare, underDevelopment: true },

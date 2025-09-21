@@ -19,6 +19,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import FeeCalculator from "./pages/FeeCalculator";
 import Analytics from "./pages/Analytics";
 import Reviews from "./pages/Reviews";
+import InfoCentre from "./pages/InfoCentre";
 import XLSXDemo from "./pages/XLSXDemo";
 import NotFound from "./pages/NotFound";
 
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/fee-calculator" element={<FeeCalculator />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/reviews" element={<Reviews />} />
+            <Route path="/info-centre" element={<InfoCentre />} />
             <Route path="/xlsx-demo" element={<XLSXDemo />} />
             {/* More routes will be added here */}
             <Route path="*" element={<NotFound />} />
