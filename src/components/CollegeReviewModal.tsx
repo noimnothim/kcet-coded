@@ -164,15 +164,15 @@ export const CollegeReviewModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold break-words text-white">{college.name}</DialogTitle>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="bg-gray-700 text-gray-200 border-gray-600">{college.code}</Badge>
+      <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 mx-4 sm:mx-0">
+        <DialogHeader className="space-y-3">
+          <DialogTitle className="text-lg sm:text-2xl font-bold break-words text-white leading-tight">{college.name}</DialogTitle>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <Badge variant="outline" className="bg-gray-700 text-gray-200 border-gray-600 w-fit">{college.code}</Badge>
             {reviews.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-gray-300">
                 <StarRating rating={Math.round(parseFloat(averageRating.toString()))} />
-                <span>{averageRating}/5 ({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
+                <span className="text-xs sm:text-sm">{averageRating}/5 ({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
               </div>
             )}
           </div>
@@ -195,15 +195,15 @@ export const CollegeReviewModal = ({
             </Card>
           )}
 
-          {/* Reviews Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">Reviews ({reviews.length})</h3>
-              <Button onClick={() => setShowAddReview(!showAddReview)} className="bg-blue-600 hover:bg-blue-700 text-white">
-                <MessageSquare className="h-4 w-4 mr-2" />
-                {showAddReview ? "Cancel" : "Add Review"}
-              </Button>
-            </div>
+            {/* Reviews Section */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 className="text-base sm:text-lg font-semibold text-white">Reviews ({reviews.length})</h3>
+                <Button onClick={() => setShowAddReview(!showAddReview)} className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base w-full sm:w-auto">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  {showAddReview ? "Cancel" : "Add Review"}
+                </Button>
+              </div>
 
             {/* Add Review Form */}
             {showAddReview && (
@@ -232,18 +232,18 @@ export const CollegeReviewModal = ({
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-white">Course (Optional)</Label>
+                      <Label className="text-white text-sm">Course (Optional)</Label>
                       <Input
                         value={newReview.course}
                         onChange={(e) => setNewReview(prev => ({ ...prev, course: e.target.value }))}
                         placeholder="e.g., Computer Science"
-                        className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                        className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 text-sm"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-white">Graduation Year (Optional)</Label>
+                      <Label className="text-white text-sm">Graduation Year (Optional)</Label>
                       <Input
                         type="number"
                         value={newReview.graduation_year}
@@ -251,14 +251,14 @@ export const CollegeReviewModal = ({
                         placeholder="2024"
                         min="2000"
                         max="2030"
-                        className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                        className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-white">Category Ratings</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Label className="text-white text-sm">Category Ratings</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <CategoryRating 
                         label="Placements" 
                         rating={newReview.placements_rating} 
@@ -289,9 +289,9 @@ export const CollegeReviewModal = ({
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button onClick={handleSubmitReview} className="bg-blue-600 hover:bg-blue-700 text-white">Submit Review</Button>
-                    <Button variant="outline" onClick={() => setShowAddReview(false)} className="border-gray-600 text-gray-300 hover:bg-gray-600">Cancel</Button>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                    <Button onClick={handleSubmitReview} className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base">Submit Review</Button>
+                    <Button variant="outline" onClick={() => setShowAddReview(false)} className="border-gray-600 text-gray-300 hover:bg-gray-600 text-sm sm:text-base">Cancel</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -315,17 +315,17 @@ export const CollegeReviewModal = ({
                         
                         <p className="text-gray-200 font-medium leading-relaxed">{review.review_text}</p>
                         
-                        <div className="flex items-center justify-between text-sm text-gray-400">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 text-xs sm:text-sm text-gray-400">
                           <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-blue-400" />
+                            <User className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400 flex-shrink-0" />
                             <span className="font-medium text-gray-300">{review.author}</span>
-                            <span className="text-gray-500">•</span>
-                            <Calendar className="h-4 w-4 text-gray-400" />
+                            <span className="text-gray-500 hidden sm:inline">•</span>
+                            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 flex-shrink-0" />
                             <span className="text-gray-400">{new Date(review.created_at).toLocaleDateString()}</span>
                           </div>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 sm:gap-3">
                             <div className="flex items-center gap-1">
-                              <ThumbsUp className="h-4 w-4 text-green-400" />
+                              <ThumbsUp className="h-3 w-3 sm:h-4 sm:w-4 text-green-400 flex-shrink-0" />
                               <span className="font-medium text-gray-300">{review.helpful_votes}</span>
                             </div>
                             {isUserReview(review) && (
@@ -333,10 +333,10 @@ export const CollegeReviewModal = ({
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleDeleteReview(review.id)}
-                                className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                                className="h-6 w-6 sm:h-8 sm:w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-900/20"
                                 title="Delete your review"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
                             )}
                           </div>

@@ -107,19 +107,19 @@ const Reviews = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">College Reviews</h1>
-          <p className="text-muted-foreground">Student reviews and ratings for KCET colleges</p>
+      <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-2 px-4 sm:px-0">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">College Reviews</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Student reviews and ratings for KCET colleges</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
           {Array.from({ length: 6 }).map((_, i) => (
             <Card key={i} className="animate-pulse">
-              <CardHeader>
+              <CardHeader className="px-4 sm:px-6">
                 <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 <div className="h-3 bg-gray-200 rounded w-1/2"></div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 sm:px-6">
                 <div className="space-y-2">
                   <div className="h-3 bg-gray-200 rounded"></div>
                   <div className="h-3 bg-gray-200 rounded w-5/6"></div>
@@ -133,28 +133,28 @@ const Reviews = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">College Reviews</h1>
-        <p className="text-muted-foreground">Student reviews and ratings for KCET colleges</p>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-2 px-4 sm:px-0">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">College Reviews</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">Student reviews and ratings for KCET colleges</p>
       </div>
 
       {/* Search and Filter Bar */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
+      <Card className="mx-4 sm:mx-0">
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search colleges by name or code..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-sm sm:text-base"
               />
             </div>
-            <Badge variant="outline" className="flex items-center gap-1">
+            <Badge variant="outline" className="flex items-center gap-1 w-fit self-center sm:self-auto">
               <Filter className="h-3 w-3" />
-              {filteredColleges.length} colleges
+              <span className="text-xs sm:text-sm">{filteredColleges.length} colleges</span>
             </Badge>
           </div>
         </CardContent>
@@ -162,7 +162,7 @@ const Reviews = () => {
 
       {/* College Review Cards */}
       {filteredColleges.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
           {filteredColleges.map(({ college, reviews }) => (
             <CollegeReviewCard
               key={college.code}
@@ -173,7 +173,7 @@ const Reviews = () => {
           ))}
         </div>
       ) : (
-        <Card>
+        <Card className="mx-4 sm:mx-0">
           <CardContent className="pt-6">
             <div className="text-center py-8">
               <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
