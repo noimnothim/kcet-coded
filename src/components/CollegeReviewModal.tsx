@@ -157,7 +157,6 @@ export const CollegeReviewModal = ({
     }
 
     try {
-      console.log('Submitting review for college:', college.code);
       const savedReview = await saveReviewToSupabase({
         collegeCode: college.code,
         rating: newReview.rating,
@@ -171,7 +170,6 @@ export const CollegeReviewModal = ({
       });
 
       if (savedReview) {
-        console.log('Review saved successfully:', savedReview);
         onAddReview(savedReview);
         setNewReview({
           rating: 0,
@@ -202,7 +200,6 @@ export const CollegeReviewModal = ({
     try {
       const success = await deleteReview(reviewId);
       if (success) {
-        console.log('Review deleted successfully');
         onDeleteReview(reviewId);
       } else {
         alert("Failed to delete review. Please try again.");

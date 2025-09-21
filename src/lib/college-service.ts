@@ -35,9 +35,6 @@ const getUserSessionId = (): string => {
   if (!sessionId) {
     sessionId = crypto.randomUUID();
     localStorage.setItem('user_session_id', sessionId);
-    console.log('🆕 Created new user session ID:', sessionId);
-  } else {
-    console.log('🔄 Using existing user session ID:', sessionId);
   }
   return sessionId;
 };
@@ -46,8 +43,6 @@ const getUserSessionId = (): string => {
 const loadReviewsFromLocalStorage = (): CollegeReview[] => {
   try {
     const reviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
-    console.log(`Loaded ${reviews.length} reviews from localStorage`);
-    console.log('Reviews data:', reviews);
     return reviews;
   } catch (error) {
     console.error('Error loading reviews from localStorage:', error);
@@ -58,8 +53,6 @@ const loadReviewsFromLocalStorage = (): CollegeReview[] => {
 // Load reviews from Supabase (when authentication is properly set up)
 const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
   try {
-    console.log('🔍 Loading reviews from Supabase...');
-    
     // First try simple query without joins
     const { data: reviews, error: reviewsError } = await supabase
       .from('college_reviews')
@@ -70,8 +63,6 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
       console.error('❌ Error loading reviews from Supabase:', reviewsError);
       return [];
     }
-
-    console.log(`✅ Loaded ${reviews?.length || 0} reviews from Supabase`);
     
     if (!reviews || reviews.length === 0) {
       return [];
@@ -187,8 +178,6 @@ export const loadColleges = async (): Promise<College[]> => {
 // Load colleges from Supabase database
 export const loadCollegesFromSupabase = async (): Promise<College[]> => {
   try {
-    console.log('🔍 Loading colleges from Supabase...');
-    
     const { data: colleges, error } = await supabase
       .from('colleges')
       .select('code, name')
@@ -197,17 +186,13 @@ export const loadCollegesFromSupabase = async (): Promise<College[]> => {
     if (error) {
       console.error('❌ Error loading colleges from Supabase:', error);
       // Fallback to JSON file
-      console.log('🔄 Falling back to JSON file...');
       return await loadColleges();
     }
 
-    console.log(`✅ Loaded ${colleges?.length || 0} colleges from Supabase`);
-    console.log('📋 Sample colleges:', colleges?.slice(0, 3).map(c => ({ code: c.code, name: c.name?.substring(0, 50) })));
     return colleges || [];
   } catch (error) {
     console.error('❌ Error loading colleges from Supabase:', error);
     // Fallback to JSON file
-    console.log('🔄 Falling back to JSON file...');
     return await loadColleges();
   }
 };
@@ -215,14 +200,11 @@ export const loadCollegesFromSupabase = async (): Promise<College[]> => {
 export const loadCollegeReviews = async (): Promise<CollegeReview[]> => {
   try {
     // Always try Supabase first
-    console.log('Loading reviews from Supabase...');
     const supabaseReviews = await loadReviewsFromSupabase();
-    console.log(`Loaded ${supabaseReviews.length} reviews from Supabase`);
     return supabaseReviews;
   } catch (error) {
     console.error('Error loading college reviews from Supabase:', error);
     // Only fallback to localStorage if Supabase completely fails
-    console.log('Falling back to localStorage...');
     return loadReviewsFromLocalStorage();
   }
 };
@@ -232,10 +214,6 @@ export const getCollegesWithReviews = async (): Promise<{ college: College; revi
     // Load colleges from Supabase instead of JSON to ensure all colleges are available
     const colleges = await loadCollegesFromSupabase();
     const allReviews = await loadCollegeReviews();
-    
-    console.log(`🔍 Found ${colleges.length} colleges and ${allReviews.length} reviews`);
-    console.log('📋 Sample colleges:', colleges.slice(0, 3).map(c => ({ code: c.code, name: c.name?.substring(0, 50) })));
-    console.log('📋 Sample reviews:', allReviews.slice(0, 2).map(r => ({ id: r.id, collegeCode: r.collegeCode, collegeName: r.collegeName })));
     
     // Create a map of college codes to college objects for faster lookup
     const collegeCodeMap = new Map();
@@ -254,8 +232,6 @@ export const getCollegesWithReviews = async (): Promise<{ college: College; revi
       }
     });
     
-    console.log(`📊 Reviews grouped by college code:`, Array.from(reviewsByCollegeCode.keys()));
-    
     // Create result with colleges that have reviews
     const result = colleges.map(college => ({
       college,
@@ -267,7 +243,6 @@ export const getCollegesWithReviews = async (): Promise<{ college: College; revi
     const missingColleges = collegesWithReviews.filter(code => !collegeCodeMap.has(code));
     
     if (missingColleges.length > 0) {
-      console.log(`Found reviews for colleges not in main list: ${missingColleges.join(', ')}`);
       // Add these colleges to the result
       missingColleges.forEach(code => {
         const reviews = reviewsByCollegeCode.get(code);
@@ -285,7 +260,6 @@ export const getCollegesWithReviews = async (): Promise<{ college: College; revi
       });
     }
     
-    console.log(`Mapped ${result.length} colleges with reviews`);
     return result;
   } catch (error) {
     console.error('Error loading colleges with reviews:', error);
@@ -306,7 +280,6 @@ export const saveReviewToSupabase = async (reviewData: {
   graduation_year?: number;
 }): Promise<CollegeReview | null> => {
   try {
-    console.log('Saving review to Supabase:', reviewData.collegeCode);
     
     // First, check if the college exists in the database
     let { data: collegeData, error: collegeError } = await supabase
@@ -316,7 +289,6 @@ export const saveReviewToSupabase = async (reviewData: {
       .single();
 
     if (collegeError || !collegeData) {
-      console.log('College not found, this should not happen since all colleges are in Supabase:', reviewData.collegeCode);
       console.error('College error:', collegeError);
       // Fallback to localStorage
       return saveToLocalStorage(reviewData);
@@ -324,10 +296,6 @@ export const saveReviewToSupabase = async (reviewData: {
 
     // Use the user session ID for tracking user's own reviews
     const userSessionId = getUserSessionId();
-    
-    console.log('Using user session ID:', userSessionId);
-
-    console.log('Inserting review...');
     const { data, error } = await supabase
       .from('college_reviews')
       .insert({
@@ -347,17 +315,9 @@ export const saveReviewToSupabase = async (reviewData: {
 
     if (error) {
       console.error('Error saving review to Supabase:', error);
-      console.error('Error details:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint
-      });
       // Fallback to localStorage
       return saveToLocalStorage(reviewData);
     }
-
-    console.log('Review saved successfully to Supabase:', data.id);
     return {
       id: data.id,
       college_id: data.college_id,
@@ -399,7 +359,6 @@ const saveToLocalStorage = (reviewData: {
   course?: string;
   graduation_year?: number;
 }): CollegeReview => {
-  console.log('Saving to localStorage as fallback');
   
   const mockReview: CollegeReview = {
     id: `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -424,16 +383,8 @@ const saveToLocalStorage = (reviewData: {
 
   // Store in localStorage for persistence during session
   const existingReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
-  console.log(`Before saving: ${existingReviews.length} reviews in localStorage`);
-  
   existingReviews.push(mockReview);
   localStorage.setItem('local_reviews', JSON.stringify(existingReviews));
-  
-  // Verify it was saved
-  const savedReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
-  console.log(`After saving: ${savedReviews.length} reviews in localStorage`);
-  console.log('Review saved to localStorage:', mockReview.id);
-  console.log('Saved review data:', mockReview);
   
   return mockReview;
 };
@@ -441,7 +392,6 @@ const saveToLocalStorage = (reviewData: {
 // Delete review from Supabase
 export const deleteReviewFromSupabase = async (reviewId: string): Promise<boolean> => {
   try {
-    console.log('Deleting review from Supabase:', reviewId);
     
     const { error } = await supabase
       .from('college_reviews')
@@ -453,7 +403,6 @@ export const deleteReviewFromSupabase = async (reviewId: string): Promise<boolea
       return false;
     }
 
-    console.log('Review deleted successfully from Supabase');
     return true;
   } catch (error) {
     console.error('Error deleting review:', error);
@@ -464,14 +413,11 @@ export const deleteReviewFromSupabase = async (reviewId: string): Promise<boolea
 // Delete review from localStorage
 const deleteFromLocalStorage = (reviewId: string): boolean => {
   try {
-    console.log('Deleting review from localStorage:', reviewId);
-    
     const existingReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
     const updatedReviews = existingReviews.filter((review: CollegeReview) => review.id !== reviewId);
     
     localStorage.setItem('local_reviews', JSON.stringify(updatedReviews));
     
-    console.log(`Review deleted from localStorage. ${existingReviews.length - updatedReviews.length} review(s) removed.`);
     return true;
   } catch (error) {
     console.error('Error deleting review from localStorage:', error);
@@ -488,12 +434,6 @@ export const isUserReview = (review: CollegeReview): boolean => {
   // For backward compatibility: old reviews use user_id as session_id
   // For new reviews: use session_id field
   const isCurrentUser = reviewUserId === userSessionId || reviewSessionId === userSessionId;
-  
-  console.log('🔍 Checking if review belongs to user:');
-  console.log('  Review user_id:', reviewUserId);
-  console.log('  Review session_id:', reviewSessionId);
-  console.log('  Current session ID:', userSessionId);
-  console.log('  Is user review:', isCurrentUser);
   return isCurrentUser;
 };
 
@@ -507,7 +447,6 @@ export const deleteReview = async (reviewId: string): Promise<boolean> => {
     }
     
     // Fallback to localStorage
-    console.log('Supabase delete failed, trying localStorage...');
     return deleteFromLocalStorage(reviewId);
   } catch (error) {
     console.error('Error deleting review:', error);
