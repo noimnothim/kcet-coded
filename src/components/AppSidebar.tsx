@@ -28,7 +28,7 @@ const menuItems = [
   { title: "Fee Calculator", url: "/fee-calculator", icon: DollarSign, underDevelopment: true },
   { title: "Analytics", url: "/analytics", icon: BarChart3, underDevelopment: true },
   { title: "XLSX Demo", url: "/xlsx-demo", icon: FileSpreadsheet, underDevelopment: true },
-  { title: "Reddit Community", url: "https://www.reddit.com/r/kcet/", icon: ExternalLink, external: true },
+  { title: "Reddit Community", url: "https://www.reddit.com/r/KCETcoded/", icon: ExternalLink, external: true },
 ]
 
 export function AppSidebar() {
