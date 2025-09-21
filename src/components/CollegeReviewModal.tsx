@@ -82,6 +82,9 @@ export const CollegeReviewModal = ({
     faculty_rating: 0,
     infrastructure_rating: 0,
     placements_rating: 0,
+    comment: "",
+    course: "",
+    graduation_year: new Date().getFullYear(),
   });
 
   if (!college) return null;
@@ -111,6 +114,9 @@ export const CollegeReviewModal = ({
         faculty_rating: newReview.faculty_rating,
         infrastructure_rating: newReview.infrastructure_rating,
         placements_rating: newReview.placements_rating,
+        comment: newReview.comment || newReview.review_text,
+        course: newReview.course,
+        graduation_year: newReview.graduation_year,
       });
 
       if (savedReview) {
@@ -122,6 +128,9 @@ export const CollegeReviewModal = ({
           faculty_rating: 0,
           infrastructure_rating: 0,
           placements_rating: 0,
+          comment: "",
+          course: "",
+          graduation_year: new Date().getFullYear(),
         });
         setShowAddReview(false);
       } else {
@@ -221,6 +230,30 @@ export const CollegeReviewModal = ({
                       rows={4}
                       className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-white">Course (Optional)</Label>
+                      <Input
+                        value={newReview.course}
+                        onChange={(e) => setNewReview(prev => ({ ...prev, course: e.target.value }))}
+                        placeholder="e.g., Computer Science"
+                        className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-white">Graduation Year (Optional)</Label>
+                      <Input
+                        type="number"
+                        value={newReview.graduation_year}
+                        onChange={(e) => setNewReview(prev => ({ ...prev, graduation_year: parseInt(e.target.value) || new Date().getFullYear() }))}
+                        placeholder="2024"
+                        min="2000"
+                        max="2030"
+                        className="border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-3">

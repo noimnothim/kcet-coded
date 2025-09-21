@@ -20,6 +20,11 @@ export interface CollegeReview {
   collegeCode?: string;
   collegeName?: string;
   author?: string;
+  // Additional fields to match working schema
+  comment?: string;
+  course?: string;
+  graduation_year?: number;
+  helpful?: number;
 }
 
 import { supabase } from "@/integrations/supabase/client";
@@ -97,7 +102,12 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
         created_at: review.created_at || new Date().toISOString(),
         collegeCode: 'Unknown',
         collegeName: 'Unknown College',
-        author: 'Anonymous User'
+        author: 'Anonymous User',
+        // Additional fields (using defaults since they don't exist in current schema)
+        comment: review.review_text,
+        course: '',
+        graduation_year: new Date().getFullYear(),
+        helpful: review.helpful_votes || 0
       }));
     }
 
@@ -135,7 +145,12 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
         created_at: review.created_at || new Date().toISOString(),
         collegeCode: college?.code,
         collegeName: college?.name,
-        author: isCurrentUser ? 'You' : `Anonymous User` // Show "You" for current user's reviews, "Anonymous User" for others
+        author: isCurrentUser ? 'You' : `Anonymous User`, // Show "You" for current user's reviews, "Anonymous User" for others
+        // Additional fields (using defaults since they don't exist in current schema)
+        comment: review.review_text,
+        course: '',
+        graduation_year: new Date().getFullYear(),
+        helpful: review.helpful_votes || 0
       };
     });
   } catch (error) {
@@ -210,6 +225,9 @@ export const saveReviewToSupabase = async (reviewData: {
   infrastructure_rating: number;
   placements_rating: number;
   user_id?: string;
+  comment?: string;
+  course?: string;
+  graduation_year?: number;
 }): Promise<CollegeReview | null> => {
   try {
     console.log('Saving review to Supabase:', reviewData.collegeCode);
@@ -295,7 +313,8 @@ export const saveReviewToSupabase = async (reviewData: {
         infrastructure_rating: reviewData.infrastructure_rating,
         placements_rating: reviewData.placements_rating,
         helpful_votes: 0,
-        verified: false
+        verified: false,
+        // Note: Additional fields like comment, course, graduation_year are not available in current schema
       })
       .select()
       .single();
@@ -327,7 +346,12 @@ export const saveReviewToSupabase = async (reviewData: {
       verified: data.verified || false,
       created_at: data.created_at || new Date().toISOString(),
       collegeCode: reviewData.collegeCode,
-      author: `You` // Since this is the current user's review
+      author: `You`, // Since this is the current user's review
+      // Additional fields (using defaults since they don't exist in current schema)
+      comment: data.review_text,
+      course: '',
+      graduation_year: new Date().getFullYear(),
+      helpful: data.helpful_votes || 0
     };
   } catch (error) {
     console.error('Error saving review:', error);
@@ -345,6 +369,9 @@ const saveToLocalStorage = (reviewData: {
   infrastructure_rating: number;
   placements_rating: number;
   user_id?: string;
+  comment?: string;
+  course?: string;
+  graduation_year?: number;
 }): CollegeReview => {
   console.log('Saving to localStorage as fallback');
   
@@ -361,7 +388,12 @@ const saveToLocalStorage = (reviewData: {
     verified: false,
     created_at: new Date().toISOString(),
     collegeCode: reviewData.collegeCode,
-    author: `You`
+    author: `You`,
+    // Additional fields
+    comment: reviewData.comment || reviewData.review_text,
+    course: reviewData.course,
+    graduation_year: reviewData.graduation_year,
+    helpful: 0
   };
 
   // Store in localStorage for persistence during session
