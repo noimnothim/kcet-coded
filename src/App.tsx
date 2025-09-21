@@ -10,7 +10,6 @@ import RankPredictor from "./pages/RankPredictor";
 import CutoffExplorer from "./pages/CutoffExplorer";
 import CollegeFinder from "./pages/CollegeFinder";
 import MockSimulator from "./pages/MockSimulator";
-import SeatMatrix from "./pages/SeatMatrix";
 import RoundTracker from "./pages/RoundTracker";
 import CollegeCompare from "./pages/CollegeCompare";
 import Documents from "./pages/Documents";
@@ -43,7 +42,6 @@ const App = () => (
             <Route path="/cutoff-explorer" element={<CutoffExplorer />} />
             <Route path="/college-finder" element={<CollegeFinder />} />
             <Route path="/mock-simulator" element={<MockSimulator />} />
-            <Route path="/seat-matrix" element={<SeatMatrix />} />
             <Route path="/round-tracker" element={<RoundTracker />} />
             <Route path="/college-compare" element={<CollegeCompare />} />
             <Route path="/planner" element={

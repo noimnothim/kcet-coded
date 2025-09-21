@@ -23,7 +23,6 @@ const menuItems = [
   { title: "Reviews", url: "/reviews", icon: Star },
   { title: "Info Centre", url: "/info-centre", icon: Info },
   { title: "Mock Simulator", url: "/mock-simulator", icon: Shuffle, underDevelopment: true },
-  { title: "Seat Matrix", url: "/seat-matrix", icon: Table, underDevelopment: true },
   { title: "College Compare", url: "/college-compare", icon: GitCompare, underDevelopment: true },
   { title: "Planner", url: "/planner", icon: ClipboardList, underDevelopment: true },
   { title: "Fee Calculator", url: "/fee-calculator", icon: DollarSign, underDevelopment: true },
