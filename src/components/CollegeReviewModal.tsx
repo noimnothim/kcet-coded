@@ -212,9 +212,15 @@ export const CollegeReviewModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 mx-4 sm:mx-0">
+      <DialogContent 
+        className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 mx-4 sm:mx-0"
+        aria-describedby="college-review-modal-description"
+      >
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-lg sm:text-2xl font-bold break-words text-white leading-tight">{college.name}</DialogTitle>
+          <p id="college-review-modal-description" className="sr-only">
+            View and manage reviews for {college.name} ({college.code}). {reviews.length > 0 ? `Currently showing ${reviews.length} review${reviews.length !== 1 ? 's' : ''}.` : 'No reviews available yet.'}
+          </p>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
             <Badge variant="outline" className="bg-gray-700 text-gray-200 border-gray-600 w-fit">{college.code}</Badge>
             {reviews.length > 0 && (
