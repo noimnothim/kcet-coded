@@ -58,7 +58,7 @@ const loadReviewsFromLocalStorage = (): CollegeReview[] => {
 // Load reviews from Supabase (when authentication is properly set up)
 const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
   try {
-    console.log('Loading reviews from Supabase...');
+    console.log('🔍 Loading reviews from Supabase...');
     
     // First try simple query without joins
     const { data: reviews, error: reviewsError } = await supabase
@@ -67,11 +67,11 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
       .order('created_at', { ascending: false });
 
     if (reviewsError) {
-      console.error('Error loading reviews from Supabase:', reviewsError);
+      console.error('❌ Error loading reviews from Supabase:', reviewsError);
       return [];
     }
 
-    console.log(`Loaded ${reviews?.length || 0} reviews from Supabase`);
+    console.log(`✅ Loaded ${reviews?.length || 0} reviews from Supabase`);
     
     if (!reviews || reviews.length === 0) {
       return [];
@@ -79,6 +79,7 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
 
     // Get college information for each review
     const collegeIds = [...new Set(reviews.map(review => review.college_id))];
+    
     const { data: colleges, error: collegesError } = await supabase
       .from('colleges')
       .select('id, code, name')
@@ -94,9 +95,9 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
         session_id: review.session_id,
         rating: review.rating || 0,
         review_text: review.review_text || '',
-        faculty_rating: review.faculty_rating || 0,
-        infrastructure_rating: review.infrastructure_rating || 0,
-        placements_rating: review.placements_rating || 0,
+        faculty_rating: review.faculty_rating || 1,
+        infrastructure_rating: review.infrastructure_rating || 1,
+        placements_rating: review.placements_rating || 1,
         helpful_votes: review.helpful_votes || 0,
         verified: review.verified || false,
         created_at: review.created_at || new Date().toISOString(),
@@ -121,6 +122,7 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
 
     return reviews.map(review => {
       const college = collegeMap.get(review.college_id);
+      
       const currentSessionId = getUserSessionId();
       const reviewSessionId = review.session_id;
       const reviewUserId = review.user_id;
@@ -137,14 +139,14 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
         session_id: reviewSessionId,
         rating: review.rating || 0,
         review_text: review.review_text || '',
-        faculty_rating: review.faculty_rating || 0,
-        infrastructure_rating: review.infrastructure_rating || 0,
-        placements_rating: review.placements_rating || 0,
+        faculty_rating: review.faculty_rating || 1,
+        infrastructure_rating: review.infrastructure_rating || 1,
+        placements_rating: review.placements_rating || 1,
         helpful_votes: review.helpful_votes || 0,
         verified: review.verified || false,
         created_at: review.created_at || new Date().toISOString(),
-        collegeCode: college?.code,
-        collegeName: college?.name,
+        collegeCode: college?.code || 'UNKNOWN',
+        collegeName: college?.name || 'Unknown College',
         author: isCurrentUser ? 'You' : `Anonymous User`, // Show "You" for current user's reviews, "Anonymous User" for others
         // Additional fields (using defaults since they don't exist in current schema)
         comment: review.review_text,
@@ -182,6 +184,34 @@ export const loadColleges = async (): Promise<College[]> => {
   }
 };
 
+// Load colleges from Supabase database
+export const loadCollegesFromSupabase = async (): Promise<College[]> => {
+  try {
+    console.log('🔍 Loading colleges from Supabase...');
+    
+    const { data: colleges, error } = await supabase
+      .from('colleges')
+      .select('code, name')
+      .order('code', { ascending: true });
+
+    if (error) {
+      console.error('❌ Error loading colleges from Supabase:', error);
+      // Fallback to JSON file
+      console.log('🔄 Falling back to JSON file...');
+      return await loadColleges();
+    }
+
+    console.log(`✅ Loaded ${colleges?.length || 0} colleges from Supabase`);
+    console.log('📋 Sample colleges:', colleges?.slice(0, 3).map(c => ({ code: c.code, name: c.name?.substring(0, 50) })));
+    return colleges || [];
+  } catch (error) {
+    console.error('❌ Error loading colleges from Supabase:', error);
+    // Fallback to JSON file
+    console.log('🔄 Falling back to JSON file...');
+    return await loadColleges();
+  }
+};
+
 export const loadCollegeReviews = async (): Promise<CollegeReview[]> => {
   try {
     // Always try Supabase first
@@ -199,15 +229,61 @@ export const loadCollegeReviews = async (): Promise<CollegeReview[]> => {
 
 export const getCollegesWithReviews = async (): Promise<{ college: College; reviews: CollegeReview[] }[]> => {
   try {
-    const colleges = await loadColleges();
+    // Load colleges from Supabase instead of JSON to ensure all colleges are available
+    const colleges = await loadCollegesFromSupabase();
     const allReviews = await loadCollegeReviews();
     
-    console.log(`Found ${colleges.length} colleges and ${allReviews.length} reviews`);
+    console.log(`🔍 Found ${colleges.length} colleges and ${allReviews.length} reviews`);
+    console.log('📋 Sample colleges:', colleges.slice(0, 3).map(c => ({ code: c.code, name: c.name?.substring(0, 50) })));
+    console.log('📋 Sample reviews:', allReviews.slice(0, 2).map(r => ({ id: r.id, collegeCode: r.collegeCode, collegeName: r.collegeName })));
     
+    // Create a map of college codes to college objects for faster lookup
+    const collegeCodeMap = new Map();
+    colleges.forEach(college => {
+      collegeCodeMap.set(college.code, college);
+    });
+    
+    // Group reviews by college code
+    const reviewsByCollegeCode = new Map();
+    allReviews.forEach(review => {
+      if (review.collegeCode && review.collegeCode !== 'UNKNOWN') {
+        if (!reviewsByCollegeCode.has(review.collegeCode)) {
+          reviewsByCollegeCode.set(review.collegeCode, []);
+        }
+        reviewsByCollegeCode.get(review.collegeCode).push(review);
+      }
+    });
+    
+    console.log(`📊 Reviews grouped by college code:`, Array.from(reviewsByCollegeCode.keys()));
+    
+    // Create result with colleges that have reviews
     const result = colleges.map(college => ({
       college,
-      reviews: allReviews.filter(review => review.collegeCode === college.code)
+      reviews: reviewsByCollegeCode.get(college.code) || []
     }));
+    
+    // Also add any colleges that have reviews but aren't in the main colleges list
+    const collegesWithReviews = Array.from(reviewsByCollegeCode.keys());
+    const missingColleges = collegesWithReviews.filter(code => !collegeCodeMap.has(code));
+    
+    if (missingColleges.length > 0) {
+      console.log(`Found reviews for colleges not in main list: ${missingColleges.join(', ')}`);
+      // Add these colleges to the result
+      missingColleges.forEach(code => {
+        const reviews = reviewsByCollegeCode.get(code);
+        if (reviews && reviews.length > 0) {
+          // Create a college object from the first review
+          const firstReview = reviews[0];
+          result.push({
+            college: {
+              code: code,
+              name: firstReview.collegeName || `College ${code}`
+            },
+            reviews: reviews
+          });
+        }
+      });
+    }
     
     console.log(`Mapped ${result.length} colleges with reviews`);
     return result;
@@ -240,60 +316,10 @@ export const saveReviewToSupabase = async (reviewData: {
       .single();
 
     if (collegeError || !collegeData) {
-      console.log('College not found, creating new college:', reviewData.collegeCode);
-      
-      // Get the real college name from the colleges list
-      let collegeName = `College ${reviewData.collegeCode}`;
-      try {
-        const response = await fetch('/colleges-list.json');
-        if (response.ok) {
-          const colleges = await response.json();
-          const realCollege = colleges.find((col: any) => col.code === reviewData.collegeCode);
-          if (realCollege) {
-            collegeName = realCollege.name
-              .replace(/^E:\s*/, '')   // Remove leading "E:" prefix
-              .replace(/\s*:\s*$/, '') // Remove trailing ":" and spaces
-              .replace(/\s+/g, ' ')    // Replace multiple spaces with single space
-              .trim();
-          }
-        }
-      } catch (error) {
-        console.log('Could not fetch college name, using default');
-      }
-      
-      // Create the college if it doesn't exist
-      const { data: newCollege, error: createCollegeError } = await supabase
-        .from('colleges')
-        .insert({
-          code: reviewData.collegeCode,
-          name: collegeName
-        })
-        .select()
-        .single();
-
-      if (createCollegeError || !newCollege) {
-        console.error('Error creating college:', createCollegeError);
-        // If it's a duplicate key error, try to fetch the existing college
-        if (createCollegeError?.code === '23505') {
-          console.log('College already exists, fetching it...');
-          const { data: existingCollege, error: fetchError } = await supabase
-            .from('colleges')
-            .select('id')
-            .eq('code', reviewData.collegeCode)
-            .single();
-          
-          if (fetchError || !existingCollege) {
-            console.error('Error fetching existing college:', fetchError);
-            return saveToLocalStorage(reviewData);
-          }
-          collegeData = existingCollege;
-        } else {
-          // Fallback to localStorage
-          return saveToLocalStorage(reviewData);
-        }
-      } else {
-        collegeData = newCollege;
-      }
+      console.log('College not found, this should not happen since all colleges are in Supabase:', reviewData.collegeCode);
+      console.error('College error:', collegeError);
+      // Fallback to localStorage
+      return saveToLocalStorage(reviewData);
     }
 
     // Use the user session ID for tracking user's own reviews
@@ -339,9 +365,9 @@ export const saveReviewToSupabase = async (reviewData: {
       session_id: data.session_id,
       rating: data.rating || 0,
       review_text: data.review_text || '',
-      faculty_rating: data.faculty_rating || 0,
-      infrastructure_rating: data.infrastructure_rating || 0,
-      placements_rating: data.placements_rating || 0,
+      faculty_rating: data.faculty_rating || 1,
+      infrastructure_rating: data.infrastructure_rating || 1,
+      placements_rating: data.placements_rating || 1,
       helpful_votes: data.helpful_votes || 0,
       verified: data.verified || false,
       created_at: data.created_at || new Date().toISOString(),

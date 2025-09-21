@@ -18,11 +18,21 @@ const Reviews = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log('🔄 Reviews page: Loading data...')
         const data = await getCollegesWithReviews()
+        console.log('📊 Reviews page: Loaded data:', data.length, 'colleges')
+        console.log('📋 Reviews page: Data details:', data.map(d => ({ 
+          college: d.college.code, 
+          reviewCount: d.reviews.length 
+        })))
+        
+        // Show ALL colleges (both with and without reviews)
+        console.log(`🎯 Showing all ${data.length} colleges (with and without reviews)`);
+        
         setCollegesWithReviews(data)
         setFilteredColleges(data)
       } catch (error) {
-        console.error("Error loading college reviews:", error)
+        console.error("❌ Reviews page: Error loading college reviews:", error)
       } finally {
         setLoading(false)
       }
