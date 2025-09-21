@@ -32,7 +32,7 @@ const menuItems = [
 ]
 
 export function AppSidebar() {
-  const { state } = useSidebar()
+  const { state, setOpenMobile, isMobile } = useSidebar()
 
   return (
     <Sidebar className={state === "collapsed" ? "w-14" : "w-64"} collapsible="icon">
@@ -69,6 +69,11 @@ export function AppSidebar() {
                     ) : (
                       <NavLink 
                         to={item.url} 
+                        onClick={() => {
+                          if (isMobile) {
+                            setOpenMobile(false)
+                          }
+                        }}
                         className={({ isActive }) => 
                           `flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors text-sidebar-foreground ${
                             isActive 
