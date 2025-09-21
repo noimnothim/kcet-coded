@@ -87,12 +87,7 @@ export const CollegeReviewCard = ({ college, reviews, onClick }: CollegeReviewCa
               Click to view detailed reviews and ratings
             </p>
             <div className="flex items-center gap-1">
-              <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-yellow-400" />
-              <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-yellow-400" />
-              <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-yellow-400" />
-              <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-yellow-400" />
-              <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-yellow-400" />
-              <span className="text-xs sm:text-sm text-gray-300 ml-2 font-medium">4.5/5</span>
+              <span className="text-xs sm:text-sm text-gray-300 font-medium">View reviews for details</span>
             </div>
           </div>
         ) : (

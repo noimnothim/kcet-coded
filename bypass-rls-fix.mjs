@@ -74,7 +74,7 @@ async function bypassRLSFix() {
     
     // Test saving a review
     const testReview = {
-      collegeCode: 'E001',
+      collegeCode: 'E002',
       rating: 5,
       review_text: 'Test review to verify localStorage works',
       faculty_rating: 4,

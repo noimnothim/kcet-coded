@@ -13,7 +13,7 @@ async function simulateFrontendSave() {
     
     // Simulate the review data that would come from the frontend
     const reviewData = {
-      collegeCode: 'E001', // Real college code
+      collegeCode: 'E002', // Real college code
       rating: 4,
       review_text: 'This is a test review from the frontend simulation',
       faculty_rating: 4,
