@@ -10,6 +10,10 @@ export const kcet2025RankTable = [
   // Mid-range performers (70-80%)
   { score: 75.00, rank: 16000 },
   { score: 70.00, rank: 30000 },
+  
+  // Real data point: KCET 95 + 89% PUC = Rank ~25,000
+  { score: 67.3, rank: 25000 }, // KCET 95/180 (52.78%) + PUC 89% = 67.3% composite
+  
   { score: 65.00, rank: 50000 },
   { score: 60.00, rank: 80000 },
   
@@ -30,7 +34,8 @@ export const rankGapAnalysis = [
   { range: "80-85%", rankRange: "3,000-8,000", candidatesPer1Percent: "1,000" },
   { range: "75-80%", rankRange: "8,000-16,000", candidatesPer1Percent: "1,500" },
   { range: "70-75%", rankRange: "16,000-30,000", candidatesPer1Percent: "2,800" },
-  { range: "60-70%", rankRange: "30,000-80,000", candidatesPer1Percent: "4,000-5,000" },
+  { range: "65-70%", rankRange: "25,000-50,000", candidatesPer1Percent: "5,000" },
+  { range: "60-65%", rankRange: "50,000-80,000", candidatesPer1Percent: "6,000" },
   { range: "55-60%", rankRange: "70,000-80,000", candidatesPer1Percent: "2,000-3,000" },
   { range: "50-55%", rankRange: "80,000-1,55,000", candidatesPer1Percent: "15,000" },
   { range: "40-50%", rankRange: "1,55,000-2,35,000", candidatesPer1Percent: "8,000" },
