@@ -13,6 +13,9 @@ export const kcet2025RankTable = [
   { score: 65.00, rank: 50000 },
   { score: 60.00, rank: 80000 },
   
+  // Real data point: KCET 72 + 85% PUC = Rank 69,918
+  { score: 58.0, rank: 69918 }, // KCET 72/180 (40%) + PUC 85% = 58% composite
+  
   // Lower performers (50-60%)
   { score: 50.00, rank: 155000 },
   { score: 40.00, rank: 235000 },
@@ -27,8 +30,9 @@ export const rankGapAnalysis = [
   { range: "80-85%", rankRange: "3,000-8,000", candidatesPer1Percent: "1,000" },
   { range: "75-80%", rankRange: "8,000-16,000", candidatesPer1Percent: "1,500" },
   { range: "70-75%", rankRange: "16,000-30,000", candidatesPer1Percent: "2,800" },
-  { range: "60-70%", rankRange: "30,000-75,000", candidatesPer1Percent: "4,000-5,000" },
-  { range: "50-60%", rankRange: "75,000-1,55,000", candidatesPer1Percent: "8,000-9,000" },
+  { range: "60-70%", rankRange: "30,000-80,000", candidatesPer1Percent: "4,000-5,000" },
+  { range: "55-60%", rankRange: "70,000-80,000", candidatesPer1Percent: "2,000-3,000" },
+  { range: "50-55%", rankRange: "80,000-1,55,000", candidatesPer1Percent: "15,000" },
   { range: "40-50%", rankRange: "1,55,000-2,35,000", candidatesPer1Percent: "8,000" },
   { range: "30-40%", rankRange: "2,35,000-2,59,000", candidatesPer1Percent: "10,000" }
 ]
@@ -176,6 +180,7 @@ export const getRankBand = (rank: number): string => {
   if (rank <= 16000) return 'Above Average'
   if (rank <= 30000) return 'Average'
   if (rank <= 50000) return 'Below Average'
+  if (rank <= 70000) return 'Lower Average' // Updated to include 69,918 range
   if (rank <= 80000) return 'Lower'
   if (rank <= 155000) return 'Poor'
   return 'Very Poor'
@@ -229,6 +234,7 @@ export const getRankAnalysis = (rank: number): string => {
   if (rank <= 16000) return 'Above average rank. Consider various college options.'
   if (rank <= 30000) return 'Average rank. Explore multiple college choices.'
   if (rank <= 50000) return 'Below average rank. Consider all available options.'
+  if (rank <= 70000) return 'Lower average rank. Focus on colleges with higher acceptance rates and consider regional colleges.'
   if (rank <= 80000) return 'Lower rank. Focus on colleges with higher acceptance rates.'
   if (rank <= 155000) return 'Poor rank. Consider alternative pathways and colleges.'
   return 'Very poor rank. Explore all possible options including diploma courses.'
@@ -248,7 +254,9 @@ export const getCollegeSuggestions = (rank: number, category: string) => {
       { rank: 3000, name: 'SIT, NMIT, DSCE', branch: 'CSE, ECE, ME' },
       { rank: 8000, name: 'CIT, SJCE, UVCE', branch: 'All branches' },
       { rank: 16000, name: 'Regional colleges', branch: 'All branches' },
-      { rank: 30000, name: 'Private colleges', branch: 'All branches' }
+      { rank: 30000, name: 'Private colleges', branch: 'All branches' },
+      { rank: 70000, name: 'Regional engineering colleges', branch: 'All branches' },
+      { rank: 100000, name: 'Private engineering colleges', branch: 'All branches' }
     ],
     obc: [
       { rank: 300, name: 'RVCE, BMSCE', branch: 'CSE, ECE' },
@@ -256,7 +264,9 @@ export const getCollegeSuggestions = (rank: number, category: string) => {
       { rank: 4000, name: 'SIT, NMIT', branch: 'CSE, ECE' },
       { rank: 10000, name: 'CIT, SJCE', branch: 'All branches' },
       { rank: 20000, name: 'Regional colleges', branch: 'All branches' },
-      { rank: 40000, name: 'Private colleges', branch: 'All branches' }
+      { rank: 40000, name: 'Private colleges', branch: 'All branches' },
+      { rank: 80000, name: 'Regional engineering colleges', branch: 'All branches' },
+      { rank: 120000, name: 'Private engineering colleges', branch: 'All branches' }
     ],
     sc: [
       { rank: 500, name: 'RVCE, BMSCE', branch: 'CSE, ECE' },
@@ -264,7 +274,9 @@ export const getCollegeSuggestions = (rank: number, category: string) => {
       { rank: 6000, name: 'SIT, NMIT', branch: 'CSE, ECE' },
       { rank: 15000, name: 'CIT, SJCE', branch: 'All branches' },
       { rank: 30000, name: 'Regional colleges', branch: 'All branches' },
-      { rank: 60000, name: 'Private colleges', branch: 'All branches' }
+      { rank: 60000, name: 'Private colleges', branch: 'All branches' },
+      { rank: 100000, name: 'Regional engineering colleges', branch: 'All branches' },
+      { rank: 150000, name: 'Private engineering colleges', branch: 'All branches' }
     ],
     st: [
       { rank: 800, name: 'RVCE, BMSCE', branch: 'CSE, ECE' },
@@ -272,7 +284,9 @@ export const getCollegeSuggestions = (rank: number, category: string) => {
       { rank: 8000, name: 'SIT, NMIT', branch: 'CSE, ECE' },
       { rank: 20000, name: 'CIT, SJCE', branch: 'All branches' },
       { rank: 40000, name: 'Regional colleges', branch: 'All branches' },
-      { rank: 80000, name: 'Private colleges', branch: 'All branches' }
+      { rank: 80000, name: 'Private colleges', branch: 'All branches' },
+      { rank: 120000, name: 'Regional engineering colleges', branch: 'All branches' },
+      { rank: 180000, name: 'Private engineering colleges', branch: 'All branches' }
     ]
   }
   const suggestions = colleges[category as keyof typeof colleges] || colleges.general
