@@ -194,7 +194,7 @@ export function Layout({ children }: LayoutProps) {
           }}
         >
           <span style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.25))' }}>❤️</span>
-          <span style={{ letterSpacing: 0.2, textShadow: '0 1px 1px rgba(0,0,0,0.25)' }}>by u/Elegant_Compote9073</span>
+          <span style={{ letterSpacing: 0.2, textShadow: '0 1px 1px rgba(0,0,0,0.25)' }}>Made with ❤️ by VEISIT tech</span>
         </div>
         )}
       </div>

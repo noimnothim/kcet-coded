@@ -302,6 +302,6 @@ For support, questions, or feature requests:
 - Email: [gwakamoliyeah@gmail.com]
 ---
 
-**Made with ❤️ for KCET aspirants**
+**Made with ❤️ by VEISIT tech**
 
 *Helping students make informed decisions for their engineering future*
