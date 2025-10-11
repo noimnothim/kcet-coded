@@ -2,6 +2,75 @@
 
 A comprehensive web application for Karnataka CET (KCET) aspirants to explore college cutoffs, find suitable colleges, predict ranks, and make informed admission decisions.
 
+## 🔧 Setup Instructions
+
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Supabase account
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/badmedia/kcet-coded.git
+   cd kcet-coded
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   ```bash
+   # Copy the example environment file
+   cp env.example .env
+   
+   # Edit .env with your actual credentials
+   # Get these from your Supabase project dashboard
+   ```
+
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+## 🔒 Security & Environment Variables
+
+### ⚠️ **IMPORTANT SECURITY NOTES**
+
+- **Never commit `.env` files** - They contain sensitive credentials
+- The `.env` file is already in `.gitignore` to prevent accidental commits
+- Use `env.example` as a template for your environment variables
+
+### Required Environment Variables
+
+```bash
+# Supabase Configuration (Required)
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+# Optional: News API
+NEWS_API_KEY=your_news_api_key_here
+WEBHOOK_SECRET=your_webhook_secret_here
+```
+
+### Getting Supabase Credentials
+
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
+2. Select your project
+3. Go to Settings → API
+4. Copy the Project URL and anon/public key
+5. Add them to your `.env` file
+
+### Deployment Security
+
+For production deployments (Vercel, Netlify, etc.):
+- Set environment variables in your deployment platform's dashboard
+- Never use `.env` files in production
+- Use platform-specific environment variable management
+
 ## 🚀 Current Features
 
 ### ✅ **Fully Implemented Features**
