@@ -17,6 +17,8 @@ import {
   calculatePercentile, 
   getRankAnalysis, 
   getCollegeSuggestions,
+  getRankGapAnalysis,
+  getCutoffEstimates,
   type RankPrediction 
 } from "@/lib/rank-predictor"
 import { validateKCETMarks, validatePUCPercentage } from "@/lib/security"
@@ -188,7 +190,7 @@ const RankPredictor = () => {
 
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="predictor" className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
             Predictor
@@ -196,6 +198,10 @@ const RankPredictor = () => {
           <TabsTrigger value="breakdown" className="flex items-center gap-2">
             <PieChart className="h-4 w-4" />
             Breakdown
+          </TabsTrigger>
+          <TabsTrigger value="analysis" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analysis
           </TabsTrigger>
           <TabsTrigger value="progress" className="flex items-center gap-2">
             <LineChart className="h-4 w-4" />
@@ -332,8 +338,9 @@ const RankPredictor = () => {
                   {prediction && (
                     <div className="space-y-2 text-sm">
                       <p>Range: {prediction.low.toLocaleString()}–{prediction.high.toLocaleString()}</p>
-                      <p>Percentile: {getPercentile(prediction.composite)}</p>
-                      <p className="text-xs opacity-80">Among ~3,12,000 candidates</p>
+                      <p>Percentile: {prediction.percentile || calculatePercentile(prediction.medium)}</p>
+                      <p>Rank Band: <Badge variant="outline" className="ml-1">{prediction.rankBand}</Badge></p>
+                      <p className="text-xs opacity-80">Among ~2,60,000 candidates (KCET 2025)</p>
                     </div>
                   )}
                 </CardContent>
@@ -438,6 +445,122 @@ const RankPredictor = () => {
                 <Calculator className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Calculate to see breakdown</h3>
                 <p className="text-muted-foreground">Detailed insights await your prediction</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="analysis" className="space-y-6">
+          {prediction ? (
+            <>
+              {/* Rank Gap Analysis */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Rank Gap Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {(() => {
+                    const analysis = getRankGapAnalysis(prediction.composite)
+                    return (
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Rank Band:</span>
+                            <Badge variant="outline">{prediction.rankBand}</Badge>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Competition Level:</span>
+                            <Badge variant={prediction.competitionLevel?.includes('High') ? 'destructive' : 'secondary'}>
+                              {prediction.competitionLevel}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Rank Range:</span>
+                            <span className="font-medium">{analysis.rankGap}</span>
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Candidates per 1%:</span>
+                            <span className="font-medium">{analysis.candidatesPerPercent}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Improvement Potential:</span>
+                            <Badge variant={analysis.improvementPotential === 'High' ? 'default' : 'outline'}>
+                              {analysis.improvementPotential}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Percentile:</span>
+                            <span className="font-medium">{prediction.percentile}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })()}
+                </CardContent>
+              </Card>
+
+              {/* Cutoff Estimates */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    KCET 2025 Cutoff Estimates
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {getCutoffEstimates().map((cutoff, index) => (
+                      <div key={index} className="flex justify-between items-center p-3 rounded-lg bg-slate-50">
+                        <span className="font-medium">{cutoff.targetRank}</span>
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          {cutoff.expectedAggregate}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Detailed Analysis */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Detailed Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200">
+                      <h4 className="font-semibold text-blue-900 mb-2">Rank Analysis</h4>
+                      <p className="text-blue-800 text-sm">{getRankAnalysis(prediction.medium)}</p>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200">
+                      <h4 className="font-semibold text-green-900 mb-2">College Suggestions</h4>
+                      <p className="text-green-800 text-sm">
+                        Based on your rank of {prediction.medium.toLocaleString()}, 
+                        consider colleges like {getCollegeSuggestions(prediction.medium, 'general').name} 
+                        for branches in {getCollegeSuggestions(prediction.medium, 'general').branch}.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <BarChart3 className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No Analysis Available</h3>
+                <p className="text-muted-foreground text-center">
+                  Generate a rank prediction first to see detailed analysis and insights.
+                </p>
               </CardContent>
             </Card>
           )}
