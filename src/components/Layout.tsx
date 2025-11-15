@@ -99,10 +99,6 @@ export function Layout({ children }: LayoutProps) {
                         <Switch id="fast" checked={settings.dashboardFastMode} onCheckedChange={(v) => update({ dashboardFastMode: !!v })} />
                       </div>
                       <div className="flex items-center justify-between border rounded p-3">
-                        <Label htmlFor="watermark">Hide watermark</Label>
-                        <Switch id="watermark" checked={settings.hideWatermark} onCheckedChange={(v) => update({ hideWatermark: !!v })} />
-                      </div>
-                      <div className="flex items-center justify-between border rounded p-3">
                         <Label htmlFor="codes">Show course codes</Label>
                         <Switch id="codes" checked={settings.showCourseCodes} onCheckedChange={(v) => update({ showCourseCodes: !!v })} />
                       </div>
@@ -169,34 +165,6 @@ export function Layout({ children }: LayoutProps) {
             {children}
           </main>
         </div>
-        
-        {/* Watermark - Global (subtle, blurred glass) */}
-        {!settings.hideWatermark && (
-        <div 
-          style={{
-            position: 'fixed',
-            bottom: '16px',
-            right: '16px',
-            zIndex: 40,
-            padding: '8px 14px',
-            borderRadius: '9999px',
-            fontSize: '13px',
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            color: 'rgba(255,255,255,0.95)',
-            background: 'linear-gradient( to top left, rgba(255,255,255,0.08), rgba(255,255,255,0.02) )',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.25)'
-          }}
-        >
-          <span style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.25))' }}>❤️</span>
-          <span style={{ letterSpacing: 0.2, textShadow: '0 1px 1px rgba(0,0,0,0.25)' }}>Made with ❤️ by VEISIT tech</span>
-        </div>
-        )}
       </div>
     </SidebarProvider>
   )

@@ -5,7 +5,6 @@ export interface AppSettings {
   compactMode: boolean
   reduceMotion: boolean
   dashboardFastMode: boolean
-  hideWatermark: boolean
   showCourseCodes: boolean
   showInstituteCodes: boolean
   defaultYear: string | ''
@@ -20,7 +19,6 @@ export const defaultSettings: AppSettings = {
   compactMode: false,
   reduceMotion: false,
   dashboardFastMode: true,
-  hideWatermark: false,
   showCourseCodes: true,
   showInstituteCodes: true,
   defaultYear: '',
