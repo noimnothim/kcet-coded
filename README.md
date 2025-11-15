@@ -13,7 +13,7 @@ A comprehensive web application for Karnataka CET (KCET) aspirants to explore co
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/badmedia/kcet-coded.git
+   git clone https://github.com/noimnothim/kcet-coded.git
    cd kcet-coded
    ```
 
@@ -187,7 +187,7 @@ For production deployments (Vercel, Netlify, etc.):
 ### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/badmedia/kcet-coded.git
+git clone https://github.com/noimnothim/kcet-coded.git
 cd kcet-compass
 
 # Install dependencies
@@ -298,10 +298,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 **Support**
 
 For support, questions, or feature requests:
-- Create an issue on [GitHub](https://github.com/badmedia/kcet-coded/issues)
+- Create an issue on [GitHub](https://github.com/noimnothim/kcet-coded/issues)
 - Email: [gwakamoliyeah@gmail.com]
 ---
-
-**Made with ❤️ by VEISIT tech**
 
 *Helping students make informed decisions for their engineering future*
